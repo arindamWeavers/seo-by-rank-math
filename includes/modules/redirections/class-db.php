@@ -39,12 +39,19 @@ class DB {
 		if ( ! is_null( $redirction_counts ) ) {
 			return $redirction_counts;
 		}
-
+		/*This is coming up as an error;
+  		* Instead we can do it simply
+      		*/
+		/*
 		$redirction_counts = self::table()
 			->selectSum( 'status = "active"', 'active' )
 			->selectSum( 'status = "inactive"', 'inactive' )
 			->selectSum( 'status = "trashed"', 'trashed' )
 			->one( ARRAY_A );
+   		*/
+		$redirction_counts['active'] = $wpdb->get_results( "SELECT COUNT(*) AS active FROM ".self::table()->table." WHERE `status` LIKE 'active'")[0]->active;
+		$redirction_counts['inactive'] = $wpdb->get_results( "SELECT COUNT(*) AS inactive FROM ".self::table()->table." WHERE `status` LIKE 'inactive'")[0]->inactive;
+		$redirction_counts['trashed'] = $wpdb->get_results( "SELECT COUNT(*) AS trashed FROM ".self::table()->table." WHERE `status` LIKE 'trashed'")[0]->trashed;
 
 		$redirction_counts['all'] = $redirction_counts['active'] + $redirction_counts['inactive'];
 
